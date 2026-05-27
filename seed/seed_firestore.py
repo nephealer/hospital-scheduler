@@ -269,7 +269,7 @@ def seed_doctors(db, hospitals: list[tuple[str, dict]]) -> list[tuple[str, dict]
                 "phone": fake.phone_number(),
                 "email": f"{email_local}@hospital-scheduler.example",
             },
-            "hospital_id": db.collection("hospitals").document(hospital_id),
+            "hospital_id": hospital_id,
             "available_slots": generate_available_slots(),
             "bio": bio,
         }
