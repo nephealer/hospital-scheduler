@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "demo-hospital-scheduler"
-  }
+    "default": "hospital-schedular-nephealer"
+  },
+  "targets": {},
+  "etags": {}
 }
