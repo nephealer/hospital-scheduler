@@ -1,0 +1,32 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /doctors/{doctorId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /hospitals/{hospitalId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /patients/{patientId} {
+      allow read: if request.auth != null && request.auth.uid == patientId;
+      allow create: if request.auth != null;
+      allow update, delete: if request.auth != null && request.auth.uid == patientId;
+    }
+
+    match /appointments/{appointmentId} {
+      allow read: if request.auth != null &&
+        (request.auth.uid == resource.data.patient_id ||
+         request.auth.uid == resource.data.doctor_id);
+      allow create: if request.auth != null;
+      allow update: if request.auth != null &&
+        request.auth.uid == resource.data.patient_id;
+      allow delete: if false;
+    }
+  }
+}

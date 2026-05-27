@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MedFinder — Find the right doctor, fast</title>
+  <style>
+    :root {
+      --navy: #0f2c4a;
+      --navy-deep: #0a1f36;
+      --teal: #14b8a6;
+      --teal-deep: #0f9488;
+      --teal-soft: #e6fffb;
+      --bg: #f6f9fc;
+      --surface: #ffffff;
+      --text: #1f2d3d;
+      --muted: #647184;
+      --border: #e3e9f0;
+      --shadow: 0 6px 24px rgba(15, 44, 74, 0.08);
+      --shadow-hover: 0 12px 36px rgba(15, 44, 74, 0.14);
+      --radius: 14px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.5;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-deep) 100%);
+      color: #fff;
+      padding: 28px 24px;
+      box-shadow: 0 2px 12px rgba(10, 31, 54, 0.18);
+    }
+
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background: var(--teal);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 22px;
+      color: #fff;
+      box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.18);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: 0.3px;
+    }
+
+    .brand p {
+      margin: 2px 0 0;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.72);
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 36px 24px 64px;
+    }
+
+    .hero {
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 36px;
+      margin-bottom: 28px;
+    }
+
+    .hero h2 {
+      margin: 0 0 8px;
+      font-size: 26px;
+      color: var(--navy);
+    }
+
+    .hero p {
+      margin: 0 0 22px;
+      color: var(--muted);
+      max-width: 640px;
+    }
+
+    .search-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .search-row input {
+      flex: 1 1 320px;
+      min-width: 0;
+      padding: 14px 18px;
+      font-size: 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      background: #fff;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      color: var(--text);
+    }
+
+    .search-row input:focus {
+      outline: none;
+      border-color: var(--teal);
+      box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.15);
+    }
+
+    .search-row button {
+      padding: 14px 28px;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      background: var(--teal);
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.15s ease, transform 0.05s ease;
+      letter-spacing: 0.2px;
+    }
+
+    .search-row button:hover { background: var(--teal-deep); }
+    .search-row button:active { transform: translateY(1px); }
+    .search-row button:disabled { background: #9aa7b8; cursor: not-allowed; }
+
+    .suggestions {
+      margin-top: 14px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .chip {
+      display: inline-block;
+      padding: 4px 10px;
+      margin: 2px 4px 2px 0;
+      background: var(--teal-soft);
+      color: var(--teal-deep);
+      border-radius: 999px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.12s ease;
+    }
+
+    .chip:hover { background: #ccfbf1; }
+
+    .status-bar {
+      margin-bottom: 18px;
+      min-height: 22px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .status-bar strong { color: var(--navy); }
+
+    .results {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: box-shadow 0.18s ease, transform 0.18s ease;
+      border-top: 4px solid var(--teal);
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-hover);
+      transform: translateY(-2px);
+    }
+
+    .card-header {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+
+    .avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--teal), var(--navy));
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 17px;
+      flex-shrink: 0;
+    }
+
+    .card-header h3 {
+      margin: 0;
+      font-size: 17px;
+      color: var(--navy);
+    }
+
+    .card-header .specialty {
+      display: inline-block;
+      margin-top: 4px;
+      padding: 3px 10px;
+      background: var(--teal-soft);
+      color: var(--teal-deep);
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .card .bio {
+      font-size: 14px;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .meta {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 14px;
+    }
+
+    .meta-row {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+
+    .meta-icon {
+      width: 18px;
+      flex-shrink: 0;
+      color: var(--teal-deep);
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .meta-text { color: var(--text); }
+    .meta-text .muted { color: var(--muted); }
+
+    .slot {
+      background: linear-gradient(135deg, var(--teal-soft) 0%, #f0fdfa 100%);
+      border: 1px solid #ccfbf1;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 14px;
+      color: var(--navy);
+    }
+
+    .slot .label {
+      font-size: 11px;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      color: var(--teal-deep);
+      font-weight: 700;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .book {
+      margin-top: auto;
+      padding: 11px 16px;
+      border: none;
+      border-radius: 10px;
+      background: var(--navy);
+      color: #fff;
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .book:hover { background: var(--navy-deep); }
+
+    .empty, .error {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 32px;
+      text-align: center;
+      color: var(--muted);
+      box-shadow: var(--shadow);
+    }
+
+    .error { color: #9b2c2c; }
+
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2.5px solid rgba(255, 255, 255, 0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    footer {
+      text-align: center;
+      padding: 24px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    @media (max-width: 640px) {
+      .hero { padding: 24px; }
+      .hero h2 { font-size: 22px; }
+      .search-row button { width: 100%; }
+      header { padding: 22px 18px; }
+      main { padding: 24px 16px 48px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <div class="logo" aria-hidden="true">+</div>
+      <div class="brand">
+        <h1>MedFinder</h1>
+        <p>Find the right doctor based on how you feel today</p>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h2>What brings you in today?</h2>
+      <p>Describe your symptom and we'll match you with the right specialist and the soonest available appointment.</p>
+
+      <form class="search-row" id="search-form" autocomplete="off">
+        <input
+          type="text"
+          id="symptom-input"
+          name="symptom"
+          placeholder="e.g. chest pain, rash, child cough..."
+          aria-label="Symptom"
+          required
+        />
+        <button type="submit" id="search-btn">Find Doctors</button>
+      </form>
+
+      <div class="suggestions">
+        Try:
+        <span class="chip" data-symptom="chest pain">chest pain</span>
+        <span class="chip" data-symptom="rash">rash</span>
+        <span class="chip" data-symptom="fever">fever</span>
+        <span class="chip" data-symptom="child cough">child cough</span>
+        <span class="chip" data-symptom="back pain">back pain</span>
+        <span class="chip" data-symptom="anxiety">anxiety</span>
+        <span class="chip" data-symptom="blurred vision">blurred vision</span>
+      </div>
+    </section>
+
+    <div class="status-bar" id="status-bar"></div>
+    <div class="results" id="results"></div>
+  </main>
+
+  <footer>
+    &copy; <span id="year"></span> MedFinder &middot; Demo healthcare scheduling app
+  </footer>
+
+  <script>
+    const API_ENDPOINT = "/api/get_available_doctors";
+
+    const form = document.getElementById("search-form");
+    const input = document.getElementById("symptom-input");
+    const btn = document.getElementById("search-btn");
+    const resultsEl = document.getElementById("results");
+    const statusEl = document.getElementById("status-bar");
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    document.querySelectorAll(".chip").forEach((chip) => {
+      chip.addEventListener("click", () => {
+        input.value = chip.dataset.symptom;
+        form.requestSubmit();
+      });
+    });
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const symptom = input.value.trim();
+      if (!symptom) return;
+      await search(symptom);
+    });
+
+    async function search(symptom) {
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span>Searching...';
+      statusEl.innerHTML = "";
+      resultsEl.innerHTML = "";
+
+      try {
+        const res = await fetch(API_ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ symptom }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          showError(data.error || `Request failed (${res.status})`);
+          return;
+        }
+
+        renderResults(data);
+      } catch (err) {
+        showError("Could not reach the server. Make sure the Cloud Function is deployed or the emulator is running.");
+        console.error(err);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Find Doctors";
+      }
+    }
+
+    function showError(message) {
+      resultsEl.innerHTML = `<div class="error">${escapeHtml(message)}</div>`;
+    }
+
+    function renderResults(data) {
+      const { symptom, specialty, doctors, message } = data;
+
+      if (!specialty) {
+        statusEl.innerHTML = `No specialty matched <strong>${escapeHtml(symptom)}</strong>.`;
+        resultsEl.innerHTML = `<div class="empty">${escapeHtml(message || "Try a different symptom term.")}</div>`;
+        return;
+      }
+
+      statusEl.innerHTML = `Showing <strong>${doctors.length}</strong> ${doctors.length === 1 ? "doctor" : "doctors"} in <strong>${escapeHtml(specialty)}</strong> for "<strong>${escapeHtml(symptom)}</strong>"`;
+
+      if (!doctors.length) {
+        resultsEl.innerHTML = `<div class="empty">No ${escapeHtml(specialty)} doctors with upcoming availability. Please try again later.</div>`;
+        return;
+      }
+
+      resultsEl.innerHTML = doctors.map(renderCard).join("");
+
+      resultsEl.querySelectorAll(".book").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const name = btn.dataset.doctor;
+          const slot = btn.dataset.slot;
+          alert(`Booking flow placeholder:\n\nYou would now book ${name} for ${formatDate(slot)}.`);
+        });
+      });
+    }
+
+    function renderCard(d) {
+      const initials = (d.name || "")
+        .replace(/^Dr\.?\s*/i, "")
+        .split(/\s+/)
+        .filter(Boolean)
+        .map((p) => p[0])
+        .slice(0, 2)
+        .join("")
+        .toUpperCase();
+
+      const hospitalName = d.hospital?.name || "Unknown Hospital";
+      const city = d.hospital?.city || "";
+      const state = d.hospital?.state || "";
+      const cityLine = [city, state].filter(Boolean).join(", ");
+      const phone = d.hospital?.phone || "";
+
+      return `
+        <article class="card">
+          <div class="card-header">
+            <div class="avatar" aria-hidden="true">${escapeHtml(initials || "MD")}</div>
+            <div>
+              <h3>${escapeHtml(d.name)}</h3>
+              <span class="specialty">${escapeHtml(d.specialty)}</span>
+            </div>
+          </div>
+
+          <p class="bio">${escapeHtml(d.bio || "")}</p>
+
+          <div class="meta">
+            <div class="meta-row">
+              <span class="meta-icon">+</span>
+              <span class="meta-text">
+                ${escapeHtml(hospitalName)}
+                ${cityLine ? `<br><span class="muted">${escapeHtml(cityLine)}</span>` : ""}
+              </span>
+            </div>
+            ${phone ? `
+            <div class="meta-row">
+              <span class="meta-icon">&#9742;</span>
+              <span class="meta-text">${escapeHtml(phone)}</span>
+            </div>` : ""}
+          </div>
+
+          <div class="slot">
+            <span class="label">Next available</span>
+            ${escapeHtml(formatDate(d.next_available_slot))}
+          </div>
+
+          <button
+            class="book"
+            data-doctor="${escapeHtml(d.name)}"
+            data-slot="${escapeHtml(d.next_available_slot)}"
+          >Book</button>
+        </article>
+      `;
+    }
+
+    function formatDate(iso) {
+      if (!iso) return "Unavailable";
+      try {
+        const d = new Date(iso);
+        return d.toLocaleString(undefined, {
+          weekday: "short",
+          month: "short",
+          day: "numeric",
+          hour: "numeric",
+          minute: "2-digit",
+        });
+      } catch {
+        return iso;
+      }
+    }
+
+    function escapeHtml(s) {
+      return String(s ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+  </script>
+</body>
+</html>

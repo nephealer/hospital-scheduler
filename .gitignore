@@ -1,0 +1,23 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+.env
+
+# Firebase
+.firebase/
+firebase-debug.log
+firebase-debug.*.log
+ui-debug.log
+firestore-debug.log
+
+# Service account keys - NEVER commit these
+*service-account*.json
+*serviceAccount*.json
+*-firebase-adminsdk-*.json
+
+# Node
+node_modules/
+
+# OS
+.DS_Store
