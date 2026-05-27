@@ -53,4 +53,5 @@ jobs:
             --project hospital-schedular-nephealer
 
       - name: Print live hosting URL
-        run: echo "Live at: https://hospital-schedular-nephealer.web.app"
+        run: |
+          echo "Live at: https://hospital-schedular-nephealer.web.app"

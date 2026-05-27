@@ -7,7 +7,7 @@ Usage:
 
     # Against local emulator:
     export FIRESTORE_EMULATOR_HOST=localhost:8080
-    python seed/seed_firestore.py --project demo-hospital-scheduler
+    python seed/seed_firestore.py --project hospital-schedular-nephealer
 """
 
 from __future__ import annotations
@@ -170,7 +170,7 @@ def initialize_firebase(project_id: str | None, credentials_path: str | None) ->
         firebase_admin.initialize_app(cred, options)
     elif os.getenv("FIRESTORE_EMULATOR_HOST"):
         # Emulator mode — no real credentials needed.
-        options = {"projectId": project_id or "demo-hospital-scheduler"}
+        options = {"projectId": project_id or "hospital-schedular-nephealer"}
         firebase_admin.initialize_app(options=options)
     else:
         options = {"projectId": project_id} if project_id else None

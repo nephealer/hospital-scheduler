@@ -93,7 +93,7 @@ firebase emulators:start --only firestore
 # in another terminal:
 export FIRESTORE_EMULATOR_HOST=localhost:8080
 source seed/venv/bin/activate
-python seed/seed_firestore.py --project demo-hospital-scheduler --wipe
+python seed/seed_firestore.py --project hospital-schedular-nephealer --wipe
 ```
 
 The script creates:
